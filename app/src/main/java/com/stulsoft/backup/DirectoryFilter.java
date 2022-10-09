@@ -1,5 +1,7 @@
 package com.stulsoft.backup;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Collection;
@@ -9,17 +11,19 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DirectoryFilter implements FileFilter {
+    private static final int showInfoStep = 1;
     private final Set<String> skipFolders;
     private final AtomicInteger handledDirectories = new AtomicInteger(0);
     private final AtomicInteger skippedDirectories = new AtomicInteger(0);
     private final AtomicInteger handledFiles = new AtomicInteger(0);
-    private final AtomicInteger skippedFiles = new AtomicInteger(0);
+
+    private final AtomicInteger showInfoCounter = new AtomicInteger(0);
 
     public DirectoryFilter(Collection<String> skipFolders) {
-        if (skipFolders == null){
+        if (skipFolders == null) {
             this.skipFolders = Collections.emptySet();
-        }else {
-            this.skipFolders = new HashSet<>(skipFolders);
+        } else {
+            this.skipFolders = new HashSet<>(skipFolders.stream().map(FilenameUtils::separatorsToSystem).toList());
         }
     }
 
@@ -35,10 +39,6 @@ public class DirectoryFilter implements FileFilter {
         return handledFiles.get();
     }
 
-    public int getSkippedFiles() {
-        return skippedFiles.get();
-    }
-
     /**
      * Tests whether the specified abstract pathname should be
      * included in a pathname list.
@@ -51,19 +51,18 @@ public class DirectoryFilter implements FileFilter {
     public boolean accept(File pathname) {
         if (pathname.isDirectory()) {
             handledDirectories.incrementAndGet();
+            if (showInfoCounter.incrementAndGet() > showInfoStep) {
+                showInfoCounter.set(0);
+                System.out.printf("\rProcessing directory number %d", handledDirectories.get());
+            }
+            for (var skipFolder : skipFolders) {
+                if (pathname.toPath().toString().contains(skipFolder)) {
+                    skippedDirectories.incrementAndGet();
+                    return false;
+                }
+            }
         } else {
             handledFiles.incrementAndGet();
-        }
-//        System.out.printf("Handling %s file%n", pathname.toPath());
-        for (var skipFolder : skipFolders) {
-            if (pathname.toPath().toString().contains(skipFolder)) {
-                if (pathname.isDirectory()) {
-                    skippedDirectories.incrementAndGet();
-                } else {
-                    skippedFiles.incrementAndGet();
-                }
-                return false;
-            }
         }
         return true;
     }

@@ -22,18 +22,18 @@ public class CopyDirectories {
             long start = System.currentTimeMillis();
             var directoryFilter = new DirectoryFilter(directory.getDirectoriesToSkip());
             try {
+                FileUtils.deleteDirectory(new File(directory.getDestination()));
                 FileUtils.copyDirectory(new File(directory.getSource()),
-                        new File(directory.getDestination()), directoryFilter, true);
+                        new File(directory.getDestination()), directoryFilter, false);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-            System.out.printf("%s copied in %s%n", directory.getName(),
+            System.out.printf("%n%s copied in %s%n", directory.getName(),
                     DurationFormatUtils.formatDuration(System.currentTimeMillis() - start, "HH:mm:ss,SSS",
                             true));
             System.out.printf("Handled %d directories, %d files.%n",
                     directoryFilter.getHandledDirectories(), directoryFilter.getHandledFiles());
-            System.out.printf("Skipped %d directories, %d files.%n",
-                    directoryFilter.getSkippedDirectories(), directoryFilter.getSkippedFiles());
+            System.out.printf("Skipped %d directories.%n", directoryFilter.getSkippedDirectories());
         }
     }
 }
