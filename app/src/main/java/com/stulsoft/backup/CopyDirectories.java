@@ -16,7 +16,7 @@ public class CopyDirectories {
 
     public void makeCopy() {
         for (var directory : directories) {
-            System.out.printf("Copying %s%n", directory.getName());
+            System.out.printf("%nCopying %s%n", directory.getName());
             System.out.printf("   source     : %s%n", directory.getSource());
             System.out.printf("   destination: %s%n", directory.getDestination());
             long start = System.currentTimeMillis();

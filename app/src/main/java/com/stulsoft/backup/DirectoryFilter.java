@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DirectoryFilter implements FileFilter {
-    private static final int showInfoStep = 1;
+    private static final int showInfoStep = 100;
     private final Set<String> skipFolders;
     private final AtomicInteger handledDirectories = new AtomicInteger(0);
     private final AtomicInteger skippedDirectories = new AtomicInteger(0);
@@ -51,10 +51,6 @@ public class DirectoryFilter implements FileFilter {
     public boolean accept(File pathname) {
         if (pathname.isDirectory()) {
             handledDirectories.incrementAndGet();
-            if (showInfoCounter.incrementAndGet() > showInfoStep) {
-                showInfoCounter.set(0);
-                System.out.printf("\rProcessing directory number %d", handledDirectories.get());
-            }
             for (var skipFolder : skipFolders) {
                 if (pathname.toPath().toString().contains(skipFolder)) {
                     skippedDirectories.incrementAndGet();
@@ -63,6 +59,12 @@ public class DirectoryFilter implements FileFilter {
             }
         } else {
             handledFiles.incrementAndGet();
+
+            if (showInfoCounter.incrementAndGet() > showInfoStep) {
+                showInfoCounter.set(0);
+                System.out.printf("\rProcessing directory number %d, file number %d",
+                        handledDirectories.get(), handledFiles.get());
+            }
         }
         return true;
     }
