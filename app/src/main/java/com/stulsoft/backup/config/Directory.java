@@ -10,6 +10,8 @@ public class Directory {
     private String source;
     private String destination;
 
+    private Integer maxBackupDirectories;
+
     @Optional
     private List<String> directoriesToSkip;
 
@@ -48,6 +50,14 @@ public class Directory {
         this.directoriesToSkip = directoriesToSkip;
     }
 
+    public Integer getMaxBackupDirectories() {
+        return maxBackupDirectories;
+    }
+
+    public void setMaxBackupDirectories(Integer maxBackupDirectories) {
+        this.maxBackupDirectories = maxBackupDirectories;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,6 +78,7 @@ public class Directory {
                 "name='" + name + '\'' +
                 ", source='" + source + '\'' +
                 ", destination='" + destination + '\'' +
+                ", maxBackupDirectories=" + maxBackupDirectories +
                 ", directoriesToSkip=" + directoriesToSkip +
                 '}';
     }

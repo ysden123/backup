@@ -16,15 +16,17 @@ public class CopyDirectories {
 
     public void makeCopy() {
         for (var directory : directories) {
+            var versionService = new VersionService(directory.getDestination(), directory.getMaxBackupDirectories());
+            var odn = versionService.buildOutputDirectoryName();
             System.out.printf("%nCopying %s%n", directory.getName());
             System.out.printf("   source     : %s%n", directory.getSource());
-            System.out.printf("   destination: %s%n", directory.getDestination());
+            System.out.printf("   destination: %s%n", odn);
             long start = System.currentTimeMillis();
             var directoryFilter = new DirectoryFilter(directory.getDirectoriesToSkip());
             try {
-                FileUtils.deleteDirectory(new File(directory.getDestination()));
+                FileUtils.deleteDirectory(new File(odn));
                 FileUtils.copyDirectory(new File(directory.getSource()),
-                        new File(directory.getDestination()), directoryFilter, false);
+                        new File(odn), directoryFilter, false);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
