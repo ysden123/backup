@@ -3,6 +3,8 @@ plugins {
     application
 }
 
+version = "1.0.0"
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -18,6 +20,11 @@ dependencies {
 
     // Use JUnit Jupiter for testing.
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 application {
