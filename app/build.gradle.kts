@@ -3,7 +3,7 @@ plugins {
     application
 }
 
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -38,9 +38,11 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.register<Copy>("copyRunWithPause"){
-    from(layout.projectDirectory.file("runWithPause.bat"))
-    into(layout.buildDirectory.dir("scripts"))
+tasks.named("startScripts"){
+    doLast {
+        layout.buildDirectory.file("scripts/app.bat")
+            .get()
+            .asFile
+            .appendText("pause")
+    }
 }
-
-tasks.named("startScripts"){finalizedBy("copyRunWithPause")}
