@@ -3,7 +3,7 @@ plugins {
     application
 }
 
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -19,7 +19,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
 
     // Use JUnit Jupiter for testing.
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
 }
 
 java {
@@ -37,3 +37,10 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.register<Copy>("copyRunWithPause"){
+    from(layout.projectDirectory.file("runWithPause.bat"))
+    into(layout.buildDirectory.dir("scripts"))
+}
+
+tasks.named("startScripts"){finalizedBy("copyRunWithPause")}
